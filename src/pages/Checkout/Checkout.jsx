@@ -87,7 +87,7 @@ const Checkout = () => {
             icon: 'success',
             confirmButtonText: 'OK',
           }).then(() => {
-            navigate('/home');
+            navigate('/');
           });
   
           // Clear cart after successful order
