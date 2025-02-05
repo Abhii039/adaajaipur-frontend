@@ -11,7 +11,8 @@ export default function Header() {
   const categories = {
     shirt: ['Classic Cotton Shirt'],
     Dress: ['Floral Summer Dress'],
-    Pants: ['Slimfit Denim Jeans', 'Casual Chino Pants']
+    Pants: ['Slimfit Denim Jeans', 'Casual Chino Pants'],
+    TShirt: ['Polo','Mock']
   };
 
   const toggleMobileMenu = () => {
@@ -43,10 +44,9 @@ export default function Header() {
               onMouseLeave={() => window.innerWidth > 768 && setActiveDropdown(null)}
               onClick={() => window.innerWidth <= 768 && setActiveDropdown(activeDropdown === category ? null : category)}
             >
-              <Link to={`/${category}`} className="dropdown-trigger">
                 {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
                 <FaAngleDown />
-              </Link>
+             
               {activeDropdown === category && (
                 <div className="dropdown-content">
                   {subcategories.map((subcat) => (
