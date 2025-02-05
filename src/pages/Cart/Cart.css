@@ -220,6 +220,11 @@
   transition: all .3s ease;
 }
 
+.empty-cart button:hover {
+  background: linear-gradient(to right, #2980b9, #216a94);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(41, 128, 185, 0.3);
+}
 .cart-loading,
 .cart-error {
   text-align: center;
