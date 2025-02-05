@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaShoppingCart, FaUser, FaAngleDown, FaBars } from 'react-icons/fa';
+import { HiShoppingBag } from "react-icons/hi";
 import './Header.css';
 
 export default function Header() {
@@ -8,9 +9,9 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const categories = {
-    shirt: ['classicsottonshirt'],
-    Dress: ['FloralSummerDress'],
-    Pants: ['slimfitdenimjeans', 'casualchinopants']
+    shirt: ['Classic Cotton Shirt'],
+    Dress: ['Floral Summer Dress'],
+    Pants: ['Slimfit Denim Jeans', 'Casual Chino Pants']
   };
 
   const toggleMobileMenu = () => {
@@ -51,7 +52,7 @@ export default function Header() {
                   {subcategories.map((subcat) => (
                     <Link
                       key={subcat}
-                      to={`/${subcat.toLowerCase()}`}
+                      to={`subtype/${subcat.replace(/\s+/g, '-')}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {subcat.charAt(0).toUpperCase() + subcat.slice(1)}
@@ -68,11 +69,16 @@ export default function Header() {
 
         {/* Icons on the right */}
         <div className="nav-icons">
+
           <Link to="/wishlist" className="icon">
             <FaHeart />
           </Link>
+          
           <Link to="/cart" className="icon">
             <FaShoppingCart />
+          </Link>
+          <Link to="/order" className="icon">
+          <HiShoppingBag />
           </Link>
           <Link to="/profile" className="icon">
             <FaUser />

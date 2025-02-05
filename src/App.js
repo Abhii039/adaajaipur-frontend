@@ -12,7 +12,12 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import ContactUs from './pages/ContactUs/ContactUs';
 import AdminPanel from './pages/AdminPanel/AdminPanel'
 import Profile from'./pages/Profile/Profile'
+import ProductSubType from './pages/ProductSubType/ProductSubType';
 import './App.css';
+import Footer from './component/Footer/Footer';
+import Orders from './pages/Orders/Order';
+import ProductForm from './pages/AdminPanel/ProductForm';
+
 
 function App() {
   return (
@@ -21,27 +26,30 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/kurtas" element={<div>Kurtas Page</div>} />
-          <Route path="/kurta-sets" element={<div>Kurta Sets Page</div>} />
-          <Route path="/tops" element={<div>Tops Page</div>} />
-          <Route path="/bottoms" element={<div>Bottoms Page</div>} />
-          <Route path="/gowns" element={<div>Gowns Page</div>} />
+          <Route path="/home" element={<Home />} />
           <Route path="/about" element={<AboutUs/>} />
           <Route path="/contact" element={<ContactUs/>} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<Profile/>} />
+          <Route path="/order" element={<Orders/>} />
+
           {/* Product Details Route */}
           <Route path="/:type/:id" element={<ProductDetails />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/subtype/:subtype" element={<ProductSubType />} />
+
           <Route path="/:type" element={<ProductType />} />
+
           {/* Razorpay Checkout Route */}
           <Route path="/checkout" element={<Checkout />} />
           {/* 404 Route */}
           <Route path="*" element={<div>Page Not Found</div>} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin/form" element={<ProductForm />} />
         </Routes>
+        <Footer/>
       </div>
     </Router>
   );

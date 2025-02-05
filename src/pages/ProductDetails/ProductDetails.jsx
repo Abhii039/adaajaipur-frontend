@@ -4,6 +4,10 @@ import { FaHeart, FaShoppingCart, FaTimes, FaShippingFast, FaBox, FaUndo } from 
 import Swal from 'sweetalert2';
 import './ProductDetails.css';
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -12,10 +16,34 @@ export default function ProductDetails() {
   const [error, setError] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   // Get user from localStorage
   const user = JSON.parse(localStorage.getItem('user'));
   const isLoggedIn = !!user;
+  // Skeleton Loader Component
+const ProductSkeleton = () => (
+  <div className="product-details-container">
+    <div className="product-details">
+      <div className="product-images">
+        <Skeleton height={400} width={400} />
+        <div className="image-thumbnails">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} height={70} width={70} style={{ margin: '5px' }} />
+          ))}
+        </div>
+      </div>
+      <div className="product-info">
+        <Skeleton height={30} width="60%" />
+        <Skeleton height={20} width="40%" />
+        <Skeleton height={20} width="50%" />
+        <Skeleton height={30} width="30%" />
+        <Skeleton height={40} width="80%" />
+        <Skeleton height={40} width="50%" />
+      </div>
+    </div>
+  </div>
+);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -130,7 +158,7 @@ export default function ProductDetails() {
     </div>
   );
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <ProductSkeleton />;
   if (error) return <div className="error">Error: {error}</div>;
   if (!product) return <div className="error">Product not found</div>;
 
@@ -155,12 +183,13 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        <div className="product-info">
+        <div className="product-info-details">
           <div className="product-header">
             <h1>{product.name}</h1>
-            <p className="brand">By <span>{product.brand.name}</span></p>
-            <p className="style-code">Style Code: {product.stylecode}</p>
+            <p className="brand-detail">By <span>{product.brand.name}</span></p>
+            <p className="style-code-detail">Style Code: {product.stylecode}</p>
           </div>
+
 
           <div className="product-pricing">
             <div className="price">₹{product.price}</div>
@@ -174,6 +203,21 @@ export default function ProductDetails() {
                   <FaTimes /> Out of Stock
                 </span>
               )}
+            </div>
+          </div>
+
+          <div className="size-selection">
+            <h3>Select Size</h3>
+            <div className="size-options">
+              {['S', 'M', 'L', 'XL'].map((size) => (
+                <div
+                  key={size}
+                  className={`size-option ${selectedSize === size ? 'selected' : ''}`}
+                  onClick={() => setSelectedSize(size)}
+                >
+                  {size}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -201,7 +245,7 @@ export default function ProductDetails() {
 
           <div className="product-details-info">
             <div className="details-section">
-              <h3>Product Details</h3>
+              <h3><b>Product Details</b></h3>
               <div className="details-grid">
                 <div className="detail-item"><span className="label">Material</span><span className="value">{product.material}</span></div>
                 <div className="detail-item"><span className="label">Pattern</span><span className="value">{product.pattern}</span></div>
@@ -210,8 +254,8 @@ export default function ProductDetails() {
                 <div className="detail-item"><span className="label">Neck</span><span className="value">{product.neck}</span></div>
               </div>
             </div>
-            <div className="description"><h3>Description</h3><p>{product.description}</p></div>
-            <div className="fabric-care"><h3>Fabric Care</h3><p>{product.fabricCare}</p></div>
+            <div className="description-detail"><h3><b>Description</b></h3><p>{product.description}</p></div>
+            <div className="fabric-care"><h3><b>Fabric Care</b></h3><p>{product.fabricCare}</p></div>
           </div>
         </div>
       </div>
@@ -219,4 +263,7 @@ export default function ProductDetails() {
       {showLoginModal && <LoginModal />}
     </div>
   );
+
+  
 }
+
