@@ -147,6 +147,7 @@ const AdminPanel = () => {
                 )}
             </div>
 
+
             <div>
                     <Link className="add-tour-btn position-fixed bottom-0 end-0 m-5" 
                         style={{background:"#007bff"}} 
