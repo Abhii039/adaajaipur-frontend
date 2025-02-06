@@ -129,7 +129,20 @@ const Checkout = () => {
     });
 
     if (!response.ok) throw new Error('Failed to create COD order');
-    generateInvoice(await response.json());
+    Swal.fire({
+      title: 'Payment Successful!',
+      text: 'Do you want to download the invoice?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Download Invoice',
+      cancelButtonText: 'No, Just Go Home',
+   }).then((result) => {
+      if (result.isConfirmed) {
+         generateInvoice(orderData);
+      }
+      localStorage.removeItem('cart');
+      navigate('/home');
+   });
     await updateStockAndClearCart(userId);
     Swal.fire('Success!', 'Payment processed successfully!', 'success').then(() => {
       localStorage.removeItem('cart');
