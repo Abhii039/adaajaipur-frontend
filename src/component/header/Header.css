@@ -176,16 +176,25 @@
     bottom: 0;
     background: var(--header-bg);
     flex-direction: column;
-    padding: 1rem 2rem;
+    padding: 2rem;
     transform: translateX(100%);
     transition: transform 0.3s ease;
-    align-items: center;
-    text-align: center;
+    overflow-y: auto;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-links:not(.active) {
+    pointer-events: none;
+    visibility: hidden;
   }
 
   .nav-links > * {
     width: 100%;
-    max-width: 300px;
+    max-width: 100%;
+    padding: 0.5rem 0;
   }
 
   .dropdown {
