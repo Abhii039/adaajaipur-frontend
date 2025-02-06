@@ -145,10 +145,7 @@ const Checkout = () => {
       navigate('/home');
    });
     await updateStockAndClearCart(userId);
-    Swal.fire('Success!', 'Payment processed successfully!', 'success').then(() => {
-      localStorage.removeItem('cart');
-      navigate('/home');
-    });
+
   };
 
   const handleRazorpayPayment = async (user, totalAmount) => {
