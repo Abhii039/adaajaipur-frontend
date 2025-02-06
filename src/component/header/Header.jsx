@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaShoppingCart, FaUser, FaAngleDown, FaBars } from 'react-icons/fa';
 import { HiShoppingBag } from "react-icons/hi";
-  // Ensure Bootstrap JS is imported
 import './Header.css';
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const categories = {
     shirt: ['Classic Cotton Shirt'],
@@ -14,73 +14,68 @@ export default function Header() {
     Pants: ['Slimfit Denim Jeans', 'Casual Chino Pants']
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setActiveDropdown(null);
+    document.body.classList.toggle('nav-active');
+  };
+
   return (
-    <header className="bg-white shadow-sm sticky-top py-2">
-      <nav className="container d-flex align-items-center justify-content-between">
-        {/* Logo */}
+    <header className="header">
+      <nav className="nav-container">
         <div className="logo">
           <Link to="/">
-            <img src='../../asset/images/logo.webp' alt="Logo" className="img-fluid" style={{ height: '50px' }} />
+            <img src='../../asset/images/logo.webp' alt="Logo" />
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="btn d-lg-none"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <FaBars size={24} />
+        <button className="mobile-menu-button" onClick={toggleMobileMenu}>
+          <FaBars />
         </button>
 
-        {/* Nav Links */}
-        <div className="collapse navbar-collapse d-lg-flex" id="navbarNav">
-          <div className="navbar-nav ms-auto">
-            <Link to="/" className="nav-link px-3">Home</Link>
-            {Object.entries(categories).map(([category, subcategories]) => (
-              <div className="nav-item dropdown px-3" key={category}>
-                <Link
-                  className="nav-link dropdown-toggle"
-                  id={`dropdown-${category}`}
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {category}
-                </Link>
-                <ul className="dropdown-menu" aria-labelledby={`dropdown-${category}`}>
-                  {subcategories.map((subcat) => (
-                    <li key={subcat}>
-                      <Link className="dropdown-item" to={`subtype/${subcat.replace(/\s+/g, '-')}`}>
-                        {subcat}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+        <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+          {Object.entries(categories).map(([category, subcategories]) => (
+            <div
+              className={`dropdown ${activeDropdown === category ? 'active' : ''}`}
+              key={category}
+              onMouseEnter={() => window.innerWidth > 768 && setActiveDropdown(category)}
+              onMouseLeave={() => window.innerWidth > 768 && setActiveDropdown(null)}
+              onClick={() => window.innerWidth <= 768 && setActiveDropdown(activeDropdown === category ? null : category)}
+            >
+              <Link  className="dropdown-trigger">
+                {category}
+                <FaAngleDown />
+              </Link>
+              <div className="dropdown-content">
+                {subcategories.map((subcat) => (
+                  <Link
+                    key={subcat}
+                    to={`subtype/${subcat.replace(/\s+/g, '-')}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {subcat}
+                  </Link>
+                ))}
               </div>
-            ))}
-            <Link to="/about" className="nav-link px-3">About Us</Link>
-            <Link to="/contact" className="nav-link px-3">Contact Us</Link>
-          </div>
+            </div>
+          ))}
+          <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>About Us</Link>
+          <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link>
         </div>
 
-        {/* Icons */}
-        <div className="d-flex align-items-center gap-3">
-          <Link to="/wishlist" className="text-dark">
-            <FaHeart size={20} />
+        <div className="nav-icons">
+          <Link to="/wishlist" className="icon">
+            <FaHeart />
           </Link>
-          <Link to="/cart" className="text-dark">
-            <FaShoppingCart size={20} />
+          <Link to="/cart" className="icon">
+            <FaShoppingCart />
           </Link>
-          <Link to="/order" className="text-dark">
-            <HiShoppingBag size={20} />
+          <Link to="/order" className="icon">
+            <HiShoppingBag />
           </Link>
-          <Link to="/profile" className="text-dark">
-            <FaUser size={20} />
+          <Link to="/profile" className="icon">
+            <FaUser />
           </Link>
         </div>
       </nav>
