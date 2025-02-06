@@ -23,17 +23,16 @@ export default function Header() {
   return (
     <header className="header">
       <nav className="nav-container">
-        {/* Logo on the left */}
-        <div className="logo flex items-center h-16">
-          <Link to="/"><img src='../../asset/images/logo.webp' alt="Logo" /></Link>
+        <div className="logo">
+          <Link to="/">
+            <img src='../../asset/images/logo.webp' alt="Logo" />
+          </Link>
         </div>
 
-        {/* Mobile menu button */}
         <button className="mobile-menu-button" onClick={toggleMobileMenu}>
           <FaBars />
         </button>
 
-        {/* Dropdown pages in the center */}
         <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
           {Object.entries(categories).map(([category, subcategories]) => (
@@ -61,23 +60,19 @@ export default function Header() {
               </div>
             </div>
           ))}
-
           <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>About Us</Link>
           <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link>
         </div>
 
-        {/* Icons on the right */}
         <div className="nav-icons">
-
           <Link to="/wishlist" className="icon">
             <FaHeart />
           </Link>
-          
           <Link to="/cart" className="icon">
             <FaShoppingCart />
           </Link>
           <Link to="/order" className="icon">
-          <HiShoppingBag />
+            <HiShoppingBag />
           </Link>
           <Link to="/profile" className="icon">
             <FaUser />
