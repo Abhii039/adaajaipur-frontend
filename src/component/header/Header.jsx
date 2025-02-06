@@ -43,10 +43,10 @@ export default function Header() {
               onMouseLeave={() => window.innerWidth > 768 && setActiveDropdown(null)}
               onClick={() => window.innerWidth <= 768 && setActiveDropdown(activeDropdown === category ? null : category)}
             >
-            
+              <Link  className="dropdown-trigger">
                 {category}
                 <FaAngleDown />
-             
+              </Link>
               <div className="dropdown-content">
                 {subcategories.map((subcat) => (
                   <Link
