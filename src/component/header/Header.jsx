@@ -11,8 +11,7 @@ export default function Header() {
   const categories = {
     shirt: ['Classic Cotton Shirt'],
     Dress: ['Floral Summer Dress'],
-    Pants: ['Slimfit Denim Jeans', 'Casual Chino Pants'],
-    TShirt: ['Polo','Mock']
+    Pants: ['Slimfit Denim Jeans', 'Casual Chino Pants']
   };
 
   const toggleMobileMenu = () => {
@@ -38,28 +37,27 @@ export default function Header() {
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
           {Object.entries(categories).map(([category, subcategories]) => (
             <div
-              className="dropdown"
+              className={`dropdown ${activeDropdown === category ? 'active' : ''}`}
               key={category}
               onMouseEnter={() => window.innerWidth > 768 && setActiveDropdown(category)}
               onMouseLeave={() => window.innerWidth > 768 && setActiveDropdown(null)}
               onClick={() => window.innerWidth <= 768 && setActiveDropdown(activeDropdown === category ? null : category)}
             >
-                {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+              <Link to={`/${category}`} className="dropdown-trigger">
+                {category}
                 <FaAngleDown />
-             
-              {activeDropdown === category && (
-                <div className="dropdown-content">
-                  {subcategories.map((subcat) => (
-                    <Link
-                      key={subcat}
-                      to={`subtype/${subcat.replace(/\s+/g, '-')}`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {subcat.charAt(0).toUpperCase() + subcat.slice(1)}
-                    </Link>
-                  ))}
-                </div>
-              )}
+              </Link>
+              <div className="dropdown-content">
+                {subcategories.map((subcat) => (
+                  <Link
+                    key={subcat}
+                    to={`subtype/${subcat.replace(/\s+/g, '-')}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {subcat}
+                  </Link>
+                ))}
+              </div>
             </div>
           ))}
 
