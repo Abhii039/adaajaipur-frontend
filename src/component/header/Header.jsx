@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaShoppingCart, FaUser, FaAngleDown, FaBars } from 'react-icons/fa';
 import { HiShoppingBag } from "react-icons/hi";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import './Header.css';
 
 export default function Header() {
