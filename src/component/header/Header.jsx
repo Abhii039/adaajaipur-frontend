@@ -17,6 +17,7 @@ export default function Header() {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
     setActiveDropdown(null);
+    document.body.classList.toggle('nav-active');
   };
 
   return (
