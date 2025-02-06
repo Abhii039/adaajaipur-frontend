@@ -82,7 +82,7 @@ const UserList = () => {
                         <div className="user-info" onClick={() => handleUserClick(user)}>
                             <span className="user-name">{user.name}</span>
                             <span className="user-email">{user.email}</span>
-                            <span className="user-orders">Orders: {user.orders.length}</span>
+                            <span className="user-orders">Orders: {user.orders.length ? user.orders.length:0}</span>
                         </div>
                         <button className="delete-btn" onClick={() => deleteUser(user._id)}>
                             <FaTrashAlt />
