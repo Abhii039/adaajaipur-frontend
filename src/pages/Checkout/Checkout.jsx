@@ -129,6 +129,7 @@ const Checkout = () => {
     });
 
     if (!response.ok) throw new Error('Failed to create COD order');
+    const orderData = await response.json();
     Swal.fire({
       title: 'Payment Successful!',
       text: 'Do you want to download the invoice?',
