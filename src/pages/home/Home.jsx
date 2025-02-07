@@ -252,15 +252,14 @@ export default function Home() {
                   value={maxPrice}
                   onChange={(e) => {
                     const value = e.target.value;
-                    let newValue = value;
-                    
-                    if (value !== '') {
-                      const numericValue = parseInt(value);
-                      const min = minPrice !== '' ? parseInt(minPrice) : 0;
-                      newValue = Math.min(Math.max(numericValue, min), maxProductPrice).toString();
+                    const numericValue = value === '' ? '' : parseInt(value);
+
+                    // Ensure max price is not less than min price and does not exceed max product price
+                    if (numericValue !== '' && (numericValue < (minPrice ? parseInt(minPrice) : 0) || 0 || numericValue > maxProductPrice)) {
+                      setMaxPrice(maxProductPrice); // Set to max product price if exceeded
+                    } else {
+                      setMaxPrice(value); // Otherwise, set the value
                     }
-                    
-                    setMaxPrice(newValue);
                   }}
                   min={minPrice || "0"}
                   max={maxProductPrice}
