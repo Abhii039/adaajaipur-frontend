@@ -224,7 +224,7 @@ export default function Home() {
               </div>
 
               {/* Price filters */}
-              <div className="col-md-3">
+              
                 <input
                   type="hidden"
                   className="form-control"
@@ -232,7 +232,7 @@ export default function Home() {
                   value={0}
                   
                 />
-              </div>
+              
 
               <div className="col-md-3">
                 <input
