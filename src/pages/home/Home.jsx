@@ -235,6 +235,10 @@ export default function Home() {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
                       setMinPrice(value);
+                      // If max price exists and is less than new min price, clear max price
+                      if (maxPrice && parseInt(value) > parseInt(maxPrice)) {
+                        setMaxPrice('');
+                      }
                     }
                   }}
                   min="0"
@@ -250,12 +254,16 @@ export default function Home() {
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      setMaxPrice(value);
+                      // Only allow max price if it's greater than or equal to min price
+                      if (!minPrice || parseInt(value) >= parseInt(minPrice)) {
+                        setMaxPrice(value);
+                      }
                     }
                   }}
-                  min="0"
+                  min={minPrice || "0"}
                 />
-              </div>            </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
