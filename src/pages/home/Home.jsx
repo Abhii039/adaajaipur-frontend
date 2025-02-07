@@ -224,7 +224,6 @@ export default function Home() {
               </div>
 
               {/* Price filters */}
-
               <div className="col-md-3">
                 <input
                   type="number"
@@ -235,8 +234,8 @@ export default function Home() {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
                       setMinPrice(value);
-                      // If max price exists and is less than new min price, clear max price
-                      if (maxPrice && parseInt(value) > parseInt(maxPrice)) {
+                      // Clear max price if it becomes invalid with new min price
+                      if (maxPrice && parseInt(maxPrice) < parseInt(value)) {
                         setMaxPrice('');
                       }
                     }
@@ -253,17 +252,18 @@ export default function Home() {
                   value={maxPrice}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      // Only allow max price if it's greater than or equal to min price
-                      if (!minPrice || parseInt(value) >= parseInt(minPrice)) {
-                        setMaxPrice(value);
-                      }
+                    // Only allow if it's empty or a valid number greater than or equal to min price
+                    if (value === '' ||
+                      (parseInt(value) >= 0 &&
+                        !isNaN(parseInt(value)) &&
+                        (!minPrice || parseInt(value) >= parseInt(minPrice)))) {
+                      setMaxPrice(value);
                     }
                   }}
                   min={minPrice || "0"}
+                  disabled={!minPrice} // Disable max price input until min price is set
                 />
-              </div>
-            </div>
+              </div></div>
           </div>
         </div>
       </div>
