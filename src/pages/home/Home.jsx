@@ -246,14 +246,12 @@ export default function Home() {
                   className="form-control"
                   placeholder="Max Price"
                   value={maxPrice}
-                  onInput={(e) => {
+                  onChange={(e) => {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      if (minPrice && value !== '' && parseInt(value) < parseInt(minPrice)) {
-                        setMaxPrice(minPrice);
-                      } else {
+                     
                         setMaxPrice(value);
-                      }
+                      
                     }
                   }}
                   min="0"
