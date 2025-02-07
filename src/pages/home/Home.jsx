@@ -37,7 +37,7 @@ export default function Home() {
         }
         const data = await response.json();
         setProducts(data);
-        
+
         const grouped = data.reduce((acc, product) => {
           const type = product.type;
           if (!acc[type]) {
@@ -99,8 +99,8 @@ export default function Home() {
     const filterProducts = () => {
       const filtered = products.filter(product => {
         // Search query filter
-        const searchMatch = searchQuery === '' || 
-          Object.values(product).some(value => 
+        const searchMatch = searchQuery === '' ||
+          Object.values(product).some(value =>
             String(value).toLowerCase().includes(searchQuery.toLowerCase())
           );
 
@@ -171,7 +171,7 @@ export default function Home() {
           </div>
         )}
       </div>
-  
+
       {/* Filter Card */}
       <div className="container my-4">
         <div className="card shadow-sm">
@@ -190,7 +190,7 @@ export default function Home() {
 
               {/* Type dropdown */}
               <div className="col-md-3">
-                <select 
+                <select
                   className="form-select"
                   value={selectedType}
                   onChange={(e) => {
@@ -209,7 +209,7 @@ export default function Home() {
 
               {/* Subtype dropdown - now using filtered subtypes */}
               <div className="col-md-3">
-                <select 
+                <select
                   className="form-select"
                   value={selectedSubtype}
                   onChange={(e) => setSelectedSubtype(e.target.value)}
@@ -224,6 +224,7 @@ export default function Home() {
               </div>
 
               {/* Price filters */}
+              {/* Price filters */}
               <div className="col-md-3">
                 <input
                   type="number"
@@ -234,6 +235,11 @@ export default function Home() {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
                       setMinPrice(value);
+                      // Automatically set max price to match min price if max price is empty
+                      // or if max price is less than the new min price
+                      if (maxPrice === '' || parseInt(value) > parseInt(maxPrice)) {
+                        setMaxPrice(value);
+                      }
                     }
                   }}
                   min="0"
@@ -249,7 +255,7 @@ export default function Home() {
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      if (minPrice && value !== '' && parseInt(value) < parseInt(minPrice)) {
+                      if (minPrice && parseInt(value) < parseInt(minPrice)) {
                         setMaxPrice(minPrice);
                       } else {
                         setMaxPrice(value);
@@ -278,17 +284,17 @@ export default function Home() {
               <h2 className="type-title">{capitalizeFirstLetter(type)}</h2>
               <div className="product-grid">
                 {typeProducts.map((product) => (
-                  <ProductCard 
-                    key={product._id} 
-                    product={product} 
-                    type={product.type.toLowerCase()} 
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    type={product.type.toLowerCase()}
                   />
                 ))}
               </div>
               {typeProducts.length >= 4 && (
                 <div className="view-all-container">
-                  <button 
-                    className="view-all-button" 
+                  <button
+                    className="view-all-button"
                     onClick={() => navigate(`/${type}`)}
                   >
                     View All {capitalizeFirstLetter(type)}
@@ -300,4 +306,5 @@ export default function Home() {
         )}
       </div>
     </div>
-  );}  
+  );
+}  
