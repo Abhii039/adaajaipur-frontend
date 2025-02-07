@@ -178,7 +178,7 @@ export default function Home() {
           <div className="card-body">
             <div className="row g-3">
               {/* Search Bar */}
-              <div className="col-9">
+              <div className="col-12">
                 <input
                   type="text"
                   className="form-control"
@@ -189,7 +189,7 @@ export default function Home() {
               </div>
 
               {/* Type dropdown */}
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <select 
                   className="form-select"
                   value={selectedType}
@@ -208,7 +208,7 @@ export default function Home() {
               </div>
 
               {/* Subtype dropdown - now using filtered subtypes */}
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <select 
                   className="form-select"
                   value={selectedSubtype}
@@ -234,7 +234,7 @@ export default function Home() {
                 />
               
 
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <input
                   type="number"
                   className="form-control"
