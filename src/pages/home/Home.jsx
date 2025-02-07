@@ -178,7 +178,7 @@ export default function Home() {
           <div className="card-body">
             <div className="row g-3">
               {/* Search Bar */}
-              <div className="col-12">
+              <div className="col-9">
                 <input
                   type="text"
                   className="form-control"
