@@ -224,7 +224,7 @@ export default function Home() {
               </div>
 
               {/* Price filters */}
-              {/* Price filters */}
+
               <div className="col-md-3">
                 <input
                   type="number"
@@ -235,11 +235,6 @@ export default function Home() {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
                       setMinPrice(value);
-                      // Automatically set max price to match min price if max price is empty
-                      // or if max price is less than the new min price
-                      if (maxPrice === '' || parseInt(value) > parseInt(maxPrice)) {
-                        setMaxPrice(value);
-                      }
                     }
                   }}
                   min="0"
@@ -255,17 +250,12 @@ export default function Home() {
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      if (minPrice && parseInt(value) < parseInt(minPrice)) {
-                        setMaxPrice(minPrice);
-                      } else {
-                        setMaxPrice(value);
-                      }
+                      setMaxPrice(value);
                     }
                   }}
                   min="0"
                 />
-              </div>
-            </div>
+              </div>            </div>
           </div>
         </div>
       </div>
