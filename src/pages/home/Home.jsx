@@ -49,10 +49,8 @@ export default function Home() {
         }, {});
 
         setGroupedProducts(grouped);
+        setMaxProductPrice(Math.max(...data.map(p => p.price)));
         setLoading(false);
-
-        const prices = data.map(p => p.price);
-        setMaxProductPrice(Math.max(...prices));
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -98,40 +96,42 @@ export default function Home() {
 
   // Handle applying filters
   const handleApplyFilters = () => {
-    let adjustedMax = maxPrice;
+    // Collect all filter values
+    const currentMinPrice = minPrice !== '' ? parseInt(minPrice) : 0;
+    const currentMaxPrice = maxPrice !== '' ? parseInt(maxPrice) : maxProductPrice;
 
     // Check if maxPrice is less than minPrice
-    if (minPrice !== '' && maxPrice !== '' && parseInt(maxPrice) < parseInt(minPrice)) {
-      adjustedMax = minPrice; // Adjust maxPrice to minPrice
-      setMaxPrice(minPrice); // Update state to reflect the change
+    if (currentMaxPrice < currentMinPrice) {
+      // If maxPrice is less than minPrice, adjust maxPrice to minPrice
+      setMaxPrice(minPrice);
+    } else {
+      // Proceed to filter products based on the current filters
+      const filtered = products.filter(product => {
+        const searchMatch = searchQuery === '' ||
+          Object.values(product).some(value =>
+            String(value).toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+        const typeMatch = selectedType === '' || product.type === selectedType;
+        const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
+        const minPriceMatch = currentMinPrice === 0 || product.price >= currentMinPrice;
+        const maxPriceMatch = currentMaxPrice === maxProductPrice || product.price <= currentMaxPrice;
+
+        return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
+      });
+
+      // Group filtered products by type
+      const grouped = filtered.reduce((acc, product) => {
+        const type = product.type;
+        if (!acc[type]) {
+          acc[type] = [];
+        }
+        acc[type].push(product);
+        return acc;
+      }, {});
+
+      setFilteredGroupedProducts(grouped);
     }
-
-    // Filter products based on the current filters
-    const filtered = products.filter(product => {
-      const searchMatch = searchQuery === '' ||
-        Object.values(product).some(value =>
-          String(value).toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-      const typeMatch = selectedType === '' || product.type === selectedType;
-      const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
-      const minPriceMatch = minPrice === '' || product.price >= parseInt(minPrice);
-      const maxPriceMatch = adjustedMax === '' || product.price <= parseInt(adjustedMax);
-
-      return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
-    });
-
-    // Group filtered products by type
-    const grouped = filtered.reduce((acc, product) => {
-      const type = product.type;
-      if (!acc[type]) {
-        acc[type] = [];
-      }
-      acc[type].push(product);
-      return acc;
-    }, {});
-
-    setFilteredGroupedProducts(grouped);
   };
 
   // Get unique types and subtypes for dropdowns
