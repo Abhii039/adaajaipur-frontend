@@ -22,6 +22,7 @@ export default function Home() {
   const [filteredGroupedProducts, setFilteredGroupedProducts] = useState({});
   const [filteredSubtypes, setFilteredSubtypes] = useState([]);
   const [maxProductPrice, setMaxProductPrice] = useState(0);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const slides = [
     { image: '../../asset/images/1.jpg', title: 'New Collection' },
@@ -96,42 +97,32 @@ export default function Home() {
 
   // Handle applying filters
   const handleApplyFilters = () => {
-    // Collect all filter values
+    // Collect filter values
     const currentMinPrice = minPrice !== '' ? parseInt(minPrice) : 0;
     const currentMaxPrice = maxPrice !== '' ? parseInt(maxPrice) : maxProductPrice;
 
-    // Check if maxPrice is less than minPrice
+    // Validate min and max prices
     if (currentMaxPrice < currentMinPrice) {
-      // If maxPrice is less than minPrice, adjust maxPrice to minPrice
-      setMaxPrice(minPrice);
-    } else {
-      // Proceed to filter products based on the current filters
-      const filtered = products.filter(product => {
-        const searchMatch = searchQuery === '' ||
-          Object.values(product).some(value =>
-            String(value).toLowerCase().includes(searchQuery.toLowerCase())
-          );
-
-        const typeMatch = selectedType === '' || product.type === selectedType;
-        const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
-        const minPriceMatch = currentMinPrice === 0 || product.price >= currentMinPrice;
-        const maxPriceMatch = currentMaxPrice === maxProductPrice || product.price <= currentMaxPrice;
-
-        return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
-      });
-
-      // Group filtered products by type
-      const grouped = filtered.reduce((acc, product) => {
-        const type = product.type;
-        if (!acc[type]) {
-          acc[type] = [];
-        }
-        acc[type].push(product);
-        return acc;
-      }, {});
-
-      setFilteredGroupedProducts(grouped);
+      alert("Max price cannot be less than Min price.");
+      return; // Exit if validation fails
     }
+
+    // Filter products based on the current filters
+    const filtered = products.filter(product => {
+      const searchMatch = searchQuery === '' ||
+        Object.values(product).some(value =>
+          String(value).toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+      const typeMatch = selectedType === '' || product.type === selectedType;
+      const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
+      const minPriceMatch = currentMinPrice === 0 || product.price >= currentMinPrice;
+      const maxPriceMatch = currentMaxPrice === maxProductPrice || product.price <= currentMaxPrice;
+
+      return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
+    });
+
+    setFilteredProducts(filtered);
   };
 
   // Get unique types and subtypes for dropdowns
@@ -194,10 +185,7 @@ export default function Home() {
                 <select
                   className="form-select"
                   value={selectedType}
-                  onChange={(e) => {
-                    setSelectedType(e.target.value);
-                    setSelectedSubtype(''); // Reset subtype when type changes
-                  }}
+                  onChange={(e) => setSelectedType(e.target.value)}
                 >
                   <option value="">Select Type</option>
                   {types.map(type => (
@@ -231,15 +219,7 @@ export default function Home() {
                   className="form-control"
                   placeholder="Min Price"
                   value={minPrice}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      setMinPrice(value);
-                      if (maxPrice && parseInt(maxPrice) < parseInt(value)) {
-                        setMaxPrice('');
-                      }
-                    }
-                  }}
+                  onChange={(e) => setMinPrice(e.target.value)}
                   min="0"
                 />
               </div>
@@ -250,17 +230,7 @@ export default function Home() {
                   className="form-control"
                   placeholder="Max Price"
                   value={maxPrice}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const numericValue = value === '' ? '' : parseInt(value);
-
-                    // Ensure max price is not less than min price and does not exceed max product price
-                    if (numericValue !== '' && (numericValue < (minPrice ? parseInt(minPrice) : 0) || 0 || numericValue > maxProductPrice)) {
-                      setMaxPrice(maxProductPrice); // Set to max product price if exceeded
-                    } else {
-                      setMaxPrice(value); // Otherwise, set the value
-                    }
-                  }}
+                  onChange={(e) => setMaxPrice(e.target.value)}
                   min={minPrice || "0"}
                   max={maxProductPrice}
                   disabled={!minPrice}
@@ -287,30 +257,17 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          Object.entries(filteredGroupedProducts).map(([type, typeProducts]) => (
-            <div key={type} className="product-type-section">
-              <h2 className="type-title">{capitalizeFirstLetter(type)}</h2>
-              <div className="product-grid">
-                {typeProducts.map((product) => (
-                  <ProductCard
-                    key={product._id}
-                    product={product}
-                    type={product.type.toLowerCase()}
-                  />
-                ))}
-              </div>
-              {typeProducts.length >= 4 && (
-                <div className="view-all-container">
-                  <button
-                    className="view-all-button"
-                    onClick={() => navigate(`/${type}`)}
-                  >
-                    View All {capitalizeFirstLetter(type)}
-                  </button>
-                </div>
-              )}
-            </div>
-          ))
+          filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard
+                key={product._id}
+                product={product}
+                type={product.type.toLowerCase()}
+              />
+            ))
+          ) : (
+            <div>No products found matching the filters.</div>
+          )
         )}
       </div>
     </div>
