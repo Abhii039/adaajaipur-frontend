@@ -21,6 +21,7 @@ export default function Home() {
   const [maxPrice, setMaxPrice] = useState('');
   const [filteredGroupedProducts, setFilteredGroupedProducts] = useState({});
   const [filteredSubtypes, setFilteredSubtypes] = useState([]);
+  const [maxProductPrice, setMaxProductPrice] = useState(0);
 
   const slides = [
     { image: '../../asset/images/1.jpg', title: 'New Collection' },
@@ -49,6 +50,9 @@ export default function Home() {
 
         setGroupedProducts(grouped);
         setLoading(false);
+
+        const prices = data.map(p => p.price);
+        setMaxProductPrice(Math.max(...prices));
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -225,44 +229,46 @@ export default function Home() {
 
               {/* Price filters */}
               <div className="col-md-3">
-  <input
-    type="number"
-    className="form-control"
-    placeholder="Min Price"
-    value={minPrice}
-    onChange={(e) => {
-      const value = e.target.value;
-      if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-        setMinPrice(value);
-        if (maxPrice && parseInt(maxPrice) < parseInt(value)) {
-          setMaxPrice('');
-        }
-      }
-    }}
-    min="0"
-  />
-</div>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Min Price"
+                  value={minPrice}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
+                      setMinPrice(value);
+                      if (maxPrice && parseInt(maxPrice) < parseInt(value)) {
+                        setMaxPrice('');
+                      }
+                    }
+                  }}
+                  min="0"
+                />
+              </div>
 
-<div className="col-md-3">
-  <input
-    type="number"
-    className="form-control"
-    placeholder="Max Price"
-    value={maxPrice}
-    onChange={(e) => {
-      const value = e.target.value;
-      // Allow any input initially
-      setMaxPrice(value);
-      
-      // If the value is less than minPrice, revert to minPrice
-      if (value !== '' && minPrice !== '' && parseInt(value) < parseInt(minPrice)) {
-        setMaxPrice(minPrice);
-      }
-    }}
-    min={minPrice || "0"}
-    disabled={!minPrice}
-  />
-</div>
+              <div className="col-md-3">
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Max Price"
+                  value={maxPrice}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Get maximum actual product price
+                    const maxProductPrice = Math.max(...products.map(p => p.price));
+                    // Clamp value between minPrice and max product price
+                    const clampedValue = value !== '' ? 
+                      Math.min(Math.max(parseInt(value), minPrice || 0), maxProductPrice) : 
+                      '';
+                    
+                    setMaxPrice(clampedValue.toString());
+                  }}
+                  min={minPrice || "0"}
+                  max={Math.max(...products.map(p => p.price))} // Add max bound
+                  disabled={!minPrice}
+                />
+              </div>
             </div>
           </div>
         </div>
