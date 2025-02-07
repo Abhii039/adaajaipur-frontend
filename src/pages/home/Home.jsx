@@ -21,8 +21,6 @@ export default function Home() {
   const [maxPrice, setMaxPrice] = useState('');
   const [filteredGroupedProducts, setFilteredGroupedProducts] = useState({});
   const [filteredSubtypes, setFilteredSubtypes] = useState([]);
-  const [maxProductPrice, setMaxProductPrice] = useState(0);
-  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const slides = [
     { image: '../../asset/images/1.jpg', title: 'New Collection' },
@@ -39,7 +37,7 @@ export default function Home() {
         }
         const data = await response.json();
         setProducts(data);
-
+        
         const grouped = data.reduce((acc, product) => {
           const type = product.type;
           if (!acc[type]) {
@@ -50,7 +48,6 @@ export default function Home() {
         }, {});
 
         setGroupedProducts(grouped);
-        setMaxProductPrice(Math.max(...data.map(p => p.price)));
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -95,35 +92,46 @@ export default function Home() {
     }
   }, [selectedType, products]);
 
-  // Handle applying filters
-  const handleApplyFilters = () => {
-    // Collect filter values
-    const currentMinPrice = minPrice !== '' ? parseInt(minPrice) : 0;
-    const currentMaxPrice = maxPrice !== '' ? parseInt(maxPrice) : maxProductPrice;
+  // Filter products
+  useEffect(() => {
+    if (!products.length) return;
 
-    // Validate min and max prices
-    if (currentMaxPrice < currentMinPrice) {
-      alert("Max price cannot be less than Min price.");
-      return; // Exit if validation fails
-    }
+    const filterProducts = () => {
+      const filtered = products.filter(product => {
+        // Search query filter
+        const searchMatch = searchQuery === '' || 
+          Object.values(product).some(value => 
+            String(value).toLowerCase().includes(searchQuery.toLowerCase())
+          );
 
-    // Filter products based on the current filters
-    const filtered = products.filter(product => {
-      const searchMatch = searchQuery === '' ||
-        Object.values(product).some(value =>
-          String(value).toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        // Type filter
+        const typeMatch = selectedType === '' || product.type === selectedType;
 
-      const typeMatch = selectedType === '' || product.type === selectedType;
-      const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
-      const minPriceMatch = currentMinPrice === 0 || product.price >= currentMinPrice;
-      const maxPriceMatch = currentMaxPrice === maxProductPrice || product.price <= currentMaxPrice;
+        // Subtype filter
+        const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
 
-      return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
-    });
+        // Price filter - only apply if min/max price is not empty
+        const minPriceMatch = minPrice === '' || product.price >= parseInt(minPrice);
+        const maxPriceMatch = maxPrice === '' || product.price <= parseInt(maxPrice);
 
-    setFilteredProducts(filtered);
-  };
+        return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
+      });
+
+      // Group filtered products by type
+      const grouped = filtered.reduce((acc, product) => {
+        const type = product.type;
+        if (!acc[type]) {
+          acc[type] = [];
+        }
+        acc[type].push(product);
+        return acc;
+      }, {});
+
+      setFilteredGroupedProducts(grouped);
+    };
+
+    filterProducts();
+  }, [products, searchQuery, selectedType, selectedSubtype, minPrice, maxPrice]);
 
   // Get unique types and subtypes for dropdowns
   const types = [...new Set(products.map(product => product.type))];
@@ -163,7 +171,7 @@ export default function Home() {
           </div>
         )}
       </div>
-
+  
       {/* Filter Card */}
       <div className="container my-4">
         <div className="card shadow-sm">
@@ -182,10 +190,13 @@ export default function Home() {
 
               {/* Type dropdown */}
               <div className="col-md-3">
-                <select
+                <select 
                   className="form-select"
                   value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedType(e.target.value);
+                    setSelectedSubtype(''); // Reset subtype when type changes
+                  }}
                 >
                   <option value="">Select Type</option>
                   {types.map(type => (
@@ -198,7 +209,7 @@ export default function Home() {
 
               {/* Subtype dropdown - now using filtered subtypes */}
               <div className="col-md-3">
-                <select
+                <select 
                   className="form-select"
                   value={selectedSubtype}
                   onChange={(e) => setSelectedSubtype(e.target.value)}
@@ -219,7 +230,12 @@ export default function Home() {
                   className="form-control"
                   placeholder="Min Price"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
+                      setMinPrice(value);
+                    }
+                  }}
                   min="0"
                 />
               </div>
@@ -230,18 +246,18 @@ export default function Home() {
                   className="form-control"
                   placeholder="Max Price"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  min={minPrice || "0"}
-                  max={maxProductPrice}
-                  disabled={!minPrice}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
+                      if (minPrice && value !== '' && parseInt(value) < parseInt(minPrice)) {
+                        setMaxPrice(minPrice);
+                      } else {
+                        setMaxPrice(value);
+                      }
+                    }
+                  }}
+                  min="0"
                 />
-              </div>
-
-              {/* Apply Filters Button */}
-              <div className="col-md-3">
-                <button className="btn btn-primary w-100" onClick={handleApplyFilters}>
-                  Apply Filters
-                </button>
               </div>
             </div>
           </div>
@@ -273,7 +289,7 @@ export default function Home() {
                 <div className="view-all-container">
                   <button 
                     className="view-all-button" 
-                    onClick={() => navigate(`/${type}`)} // Use template literals for navigation
+                    onClick={() => navigate(`/${type}`)}
                   >
                     View All {capitalizeFirstLetter(type)}
                   </button>
@@ -284,5 +300,4 @@ export default function Home() {
         )}
       </div>
     </div>
-  );
-}  
+  );}  
