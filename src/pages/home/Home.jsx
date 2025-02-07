@@ -226,17 +226,11 @@ export default function Home() {
               {/* Price filters */}
               <div className="col-md-3">
                 <input
-                  type="number"
+                  type="hidden"
                   className="form-control"
                   placeholder="Min Price"
-                  value={minPrice}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      setMinPrice(value);
-                    }
-                  }}
-                  min="0"
+                  value={0}
+                  
                 />
               </div>
 
