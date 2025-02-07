@@ -252,18 +252,18 @@ export default function Home() {
                   value={maxPrice}
                   onChange={(e) => {
                     const value = e.target.value;
-                    // Only allow if it's empty or a valid number greater than or equal to min price
-                    if (value === '' ||
-                      (parseInt(value) >= 0 &&
-                        !isNaN(parseInt(value)) &&
-                        (!minPrice || parseInt(value) >= parseInt(minPrice)))) {
-                      setMaxPrice(value);
+                    if (minPrice) {
+                      // Allow setting max price only if it's greater than or equal to min price
+                      if (value === '' || (parseInt(value) >= parseInt(minPrice))) {
+                        setMaxPrice(value);
+                      }
                     }
                   }}
-                  min={minPrice || "0"}
-                  disabled={!minPrice} // Disable max price input until min price is set
+                  min={minPrice}
+                  disabled={!minPrice}
                 />
-              </div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
