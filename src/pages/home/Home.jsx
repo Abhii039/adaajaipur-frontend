@@ -246,7 +246,7 @@ export default function Home() {
                   className="form-control"
                   placeholder="Max Price"
                   value={maxPrice}
-                  onChange={(e) => {
+                  onInput={(e) => {
                     const value = e.target.value;
                     if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
                       if (minPrice && value !== '' && parseInt(value) < parseInt(minPrice)) {
