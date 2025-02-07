@@ -257,17 +257,30 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <ProductCard
-                key={product._id}
-                product={product}
-                type={product.type.toLowerCase()}
-              />
-            ))
-          ) : (
-            <div>No products found matching the filters.</div>
-          )
+          Object.entries(filteredGroupedProducts).map(([type, typeProducts]) => (
+            <div key={type} className="product-type-section">
+              <h2 className="type-title">{capitalizeFirstLetter(type)}</h2>
+              <div className="product-grid">
+                {typeProducts.map((product) => (
+                  <ProductCard 
+                    key={product._id} 
+                    product={product} 
+                    type={product.type.toLowerCase()} 
+                  />
+                ))}
+              </div>
+              {typeProducts.length >= 4 && (
+                <div className="view-all-container">
+                  <button 
+                    className="view-all-button" 
+                    onClick={() => navigate(`/${type}`)} // Use template literals for navigation
+                  >
+                    View All {capitalizeFirstLetter(type)}
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
         )}
       </div>
     </div>
