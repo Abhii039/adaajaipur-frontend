@@ -225,44 +225,44 @@ export default function Home() {
 
               {/* Price filters */}
               <div className="col-md-3">
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Min Price"
-                  value={minPrice}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
-                      setMinPrice(value);
-                      // Clear max price if it becomes invalid with new min price
-                      if (maxPrice && parseInt(maxPrice) < parseInt(value)) {
-                        setMaxPrice('');
-                      }
-                    }
-                  }}
-                  min="0"
-                />
-              </div>
+  <input
+    type="number"
+    className="form-control"
+    placeholder="Min Price"
+    value={minPrice}
+    onChange={(e) => {
+      const value = e.target.value;
+      if (value === '' || (parseInt(value) >= 0 && !isNaN(parseInt(value)))) {
+        setMinPrice(value);
+        if (maxPrice && parseInt(maxPrice) < parseInt(value)) {
+          setMaxPrice('');
+        }
+      }
+    }}
+    min="0"
+  />
+</div>
 
-              <div className="col-md-3">
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Max Price"
-                  value={maxPrice}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (minPrice) {
-                      // Allow setting max price only if it's greater than or equal to min price
-                      if (value === '' || (parseInt(value) >= parseInt(minPrice))) {
-                        setMaxPrice(value);
-                      }
-                    }
-                  }}
-                  min={minPrice}
-                  disabled={!minPrice}
-                />
-              </div>
+<div className="col-md-3">
+  <input
+    type="number"
+    className="form-control"
+    placeholder="Max Price"
+    value={maxPrice}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Allow any input initially
+      setMaxPrice(value);
+      
+      // If the value is less than minPrice, revert to minPrice
+      if (value !== '' && minPrice !== '' && parseInt(value) < parseInt(minPrice)) {
+        setMaxPrice(minPrice);
+      }
+    }}
+    min={minPrice || "0"}
+    disabled={!minPrice}
+  />
+</div>
             </div>
           </div>
         </div>
