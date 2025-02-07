@@ -101,7 +101,7 @@ const ProductList = () => {
             <h2>Product List</h2>
 
             {/* Filter Section without search input */}
-            <div className="filter-section">
+            {/* <div className="filter-section">
                 <div className="filter-grid">
                     <select 
                         value={selectedType}
@@ -131,10 +131,10 @@ const ProductList = () => {
                         ))}
                     </select>
                     <input
-                        type="number"
+                        type="hidden"
                         placeholder="Min Price"
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
+                        value={0}
+                    
                         className="filter-input"
                         min="0"
                     />
@@ -147,7 +147,7 @@ const ProductList = () => {
                         min="0"
                     />
                 </div>
-            </div>
+            </div> */}
 
             <div className="product-grid-admin">
                 {filteredProducts.map(product => (
