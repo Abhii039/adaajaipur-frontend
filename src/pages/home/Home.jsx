@@ -96,46 +96,43 @@ export default function Home() {
     }
   }, [selectedType, products]);
 
-  // Filter products
-  useEffect(() => {
-    if (!products.length) return;
+  // Handle applying filters
+  const handleApplyFilters = () => {
+    let adjustedMax = maxPrice;
 
-    const filterProducts = () => {
-      const filtered = products.filter(product => {
-        // Search query filter
-        const searchMatch = searchQuery === '' ||
-          Object.values(product).some(value =>
-            String(value).toLowerCase().includes(searchQuery.toLowerCase())
-          );
+    // Check if maxPrice is less than minPrice
+    if (minPrice !== '' && maxPrice !== '' && parseInt(maxPrice) < parseInt(minPrice)) {
+      adjustedMax = minPrice; // Adjust maxPrice to minPrice
+      setMaxPrice(minPrice); // Update state to reflect the change
+    }
 
-        // Type filter
-        const typeMatch = selectedType === '' || product.type === selectedType;
+    // Filter products based on the current filters
+    const filtered = products.filter(product => {
+      const searchMatch = searchQuery === '' ||
+        Object.values(product).some(value =>
+          String(value).toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-        // Subtype filter
-        const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
+      const typeMatch = selectedType === '' || product.type === selectedType;
+      const subtypeMatch = selectedSubtype === '' || product.subtype === selectedSubtype;
+      const minPriceMatch = minPrice === '' || product.price >= parseInt(minPrice);
+      const maxPriceMatch = adjustedMax === '' || product.price <= parseInt(adjustedMax);
 
-        // Price filter - only apply if min/max price is not empty
-        const minPriceMatch = minPrice === '' || product.price >= parseInt(minPrice);
-        const maxPriceMatch = maxPrice === '' || product.price <= parseInt(maxPrice);
+      return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
+    });
 
-        return searchMatch && typeMatch && subtypeMatch && minPriceMatch && maxPriceMatch;
-      });
+    // Group filtered products by type
+    const grouped = filtered.reduce((acc, product) => {
+      const type = product.type;
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(product);
+      return acc;
+    }, {});
 
-      // Group filtered products by type
-      const grouped = filtered.reduce((acc, product) => {
-        const type = product.type;
-        if (!acc[type]) {
-          acc[type] = [];
-        }
-        acc[type].push(product);
-        return acc;
-      }, {});
-
-      setFilteredGroupedProducts(grouped);
-    };
-
-    filterProducts();
-  }, [products, searchQuery, selectedType, selectedSubtype, minPrice, maxPrice]);
+    setFilteredGroupedProducts(grouped);
+  };
 
   // Get unique types and subtypes for dropdowns
   const types = [...new Set(products.map(product => product.type))];
@@ -269,6 +266,13 @@ export default function Home() {
                   max={maxProductPrice}
                   disabled={!minPrice}
                 />
+              </div>
+
+              {/* Apply Filters Button */}
+              <div className="col-md-3">
+                <button className="btn btn-primary w-100" onClick={handleApplyFilters}>
+                  Apply Filters
+                </button>
               </div>
             </div>
           </div>
