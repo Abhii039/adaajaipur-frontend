@@ -255,17 +255,18 @@ export default function Home() {
                   value={maxPrice}
                   onChange={(e) => {
                     const value = e.target.value;
-                    // Get maximum actual product price
-                    const maxProductPrice = Math.max(...products.map(p => p.price));
-                    // Clamp value between minPrice and max product price
-                    const clampedValue = value !== '' ? 
-                      Math.min(Math.max(parseInt(value), minPrice || 0), maxProductPrice) : 
-                      '';
+                    let newValue = value;
                     
-                    setMaxPrice(clampedValue.toString());
+                    if (value !== '') {
+                      const numericValue = parseInt(value);
+                      const min = minPrice !== '' ? parseInt(minPrice) : 0;
+                      newValue = Math.min(Math.max(numericValue, min), maxProductPrice).toString();
+                    }
+                    
+                    setMaxPrice(newValue);
                   }}
                   min={minPrice || "0"}
-                  max={Math.max(...products.map(p => p.price))} // Add max bound
+                  max={maxProductPrice}
                   disabled={!minPrice}
                 />
               </div>
