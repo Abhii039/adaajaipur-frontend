@@ -82,8 +82,7 @@ const UserList = () => {
                         <div className="user-info" onClick={() => handleUserClick(user)}>
                             <span className="user-name">{user.name}</span>
                             <span className="user-email">{user.email}</span>
-                            {user.orders?.length ?  <span className="user-orders">Orders: {user.orders.length}</span> : 
-                            <span className="user-orders">Orders: 0</span>}
+                           
                            
                         </div>
                         <button className="delete-btn" onClick={() => deleteUser(user._id)}>
